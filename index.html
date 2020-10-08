@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ぐるNAVI_API検索</title>
+    <!-- CSS読み込み -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- JQuery読み込み -->
+    <script src="js/jquery-2.1.3.min.js"></script>
+</head>
+<header>
+    <h1 class="page_title">ぐるNAVI検索MAP表示</h1>
+    <div id="geocode">geocode:data</div>
+</header>
+
+<body>
+    <div class="main_container">
+        <div class="myMap" id="myMap"></div>
+        <div class="text_area">
+            <div class="search_area_form">
+                <div>①飲食店を検索したい地域や目印となる場所を入力して下さい。<br>周辺地図を表示します。</div>
+                <input type="text" id="search_area">
+                <button id="search_area_button">周辺地図を表示</button>
+                <div>②検索条件を入力して検索したい地域をクリックしてください。</div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=Ar72Zw3de2_Zw7kPue7q0UYqPnZUN6KtCglZrKtMAnyMG5vUW7SoNad3UuMoAYu-' async defer></script>
+<script src="js/BmapQuery.js"></script>
+<script>
+// 検索位置を受け取る
+let search_lat = null;
+let search_lon = null;
+
+function GetMap(){
+    //------------------------------------------------------------------------
+    //1. Instance
+    //------------------------------------------------------------------------
+    const map = new Bmap("#myMap");
+
+    //------------------------------------------------------------------------
+    //2. Display Map
+    //   startMap(lat, lon, "MapType", Zoom[1~20]);
+    //   MapType:[load, aerial,canvasDark,canvasLight,birdseye,grayscale,streetside]
+    //--------------------------------------------------
+    map.startMap(35.689579010009766, 139.69183349609375, "load", 10);
+    
+    //----------------------------------------------------
+    //3. Geocode(2 patterns)
+    // getGeocode("searchQuery",callback);
+    //----------------------------------------------------
+    $("#search_area_button").on("click",function(){
+        const  search_area = $("#search_area").val();
+        console.log(search_area)
+        map.getGeocode(search_area, pushPin = false, function(data){
+            console.log(data);          //Get Geocode ObjectData
+            const lat = data.latitude;  //Get latitude
+            const lon = data.longitude; //Get longitude
+            document.querySelector("#geocode").innerHTML=lat+','+lon;
+            console.log(lat);
+            console.log(lon);
+        });
+    });
+
+    //B.Get geocode of click location
+    map.onGeocode("click", function(data){
+        console.log(data);                   //Get Geocode ObjectData
+        const lat = data.location.latitude;  //Get latitude
+        const lon = data.location.longitude; //Get longitude
+        document.querySelector("#geocode").innerHTML=lat+','+lon;
+        console.log(lat);
+        console.log(lon);
+        search_lat = lat;
+        search_lon = lon;
+        map.deletePin(); // ** delete pushpin **
+        let pin = map.pin(lat, lon, "#ff00ff");
+        
+    });
+    
+}
+
+
+</script>

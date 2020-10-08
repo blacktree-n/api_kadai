@@ -1,0 +1,26 @@
+
+/* ---header--- */
+h1{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.page_title{
+    color: #ffffff;
+    font-weight: bold;
+    background: #555555;
+    height: 4vh;
+}
+
+/* ---body--- */
+.main_container{
+    display: flex;
+    background: #dddddd;
+}
+.myMap{
+    flex: 1 1 auto;
+    height: 96vh;
+}
+.text_area{
+    flex: 0 0 500px;
+}
